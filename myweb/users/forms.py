@@ -1,10 +1,11 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField,FileAllowed
 from wtforms import StringField,PasswordField,SubmitField,BooleanField
-from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired,Length,EqualTo,Email,ValidationError
+from flask_wtf.file import FileField,FileAllowed
 from myweb.models import User
 from flask_login import current_user
+
+
 
 class SignUpForm(FlaskForm):
     username=StringField('Username',validators=[DataRequired(),Length(min=3,max=10)])
@@ -46,14 +47,3 @@ class UpdateAccountForm(FlaskForm):
             if validated:
                 raise ValidationError('This email has been taken.Please Check again.')
             
-class PostForm(FlaskForm):
-    title=StringField('Title',validators=[DataRequired()])
-    content=TextAreaField('Content',validators=[DataRequired()])
-
-    submit=SubmitField('Post')
-    save_draft=SubmitField('Save')
-
-
-class TestForm(FlaskForm):
-    picture=FileField('Update Profile Picture',validators=[FileAllowed(['jpg','png'])])
-    submit=SubmitField('send img')

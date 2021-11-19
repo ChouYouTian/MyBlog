@@ -15,8 +15,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///site.db"
 
 
 #using google cloud platform mysql
-from mysqlconfig import *
 
+# PASSWORD =""
+# PUBLIC_IP_ADDRESS =""
+# DBNAME =""
+# PROJECT_ID =""
+# INSTANCE_NAME =""
 # pymysql.install_as_MySQLdb()
 
 # app.config["SQLALCHEMY_DATABASE_URI"]= f"mysql+mysqldb://root:{PASSWORD}@{PUBLIC_IP_ADDRESS}/{DBNAME}?unix_socket=/cloudsql/{PROJECT_ID}:{INSTANCE_NAME}"
@@ -27,9 +31,16 @@ from mysqlconfig import *
 db = SQLAlchemy(app)
 bcrypt=Bcrypt(app)
 loginManerger=LoginManager(app)
-loginManerger.login_view='login'
+loginManerger.login_view='users.login'
 loginManerger.login_message_category='info'
 
 
-from myweb import routes
+# from myweb import routes
 
+from myweb.users.routes import users
+from myweb.posts.routes import posts
+from myweb.main.routes import main
+
+app.register_blueprint(users)
+app.register_blueprint(posts)
+app.register_blueprint(main)
