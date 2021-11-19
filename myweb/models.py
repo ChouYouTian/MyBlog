@@ -1,5 +1,5 @@
 from myweb import db,loginManerger
-from datetime import datetime, timedelta
+from datetime import datetime
 from flask_login import UserMixin
 
 

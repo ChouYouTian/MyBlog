@@ -23,7 +23,7 @@ def login():
 
             next_page=request.args.get('next')
 
-            return redirect(next_page) if next_page else  redirect(url_for('home'))
+            return redirect(next_page) if next_page else  redirect(url_for('main.home'))
         else:
             flash('Failed to login . Please check email and password', 'danger')
     return render_template('login.html', form=form)
@@ -33,7 +33,7 @@ def login():
 @users.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))
     
 
 
