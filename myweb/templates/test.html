@@ -1,0 +1,184 @@
+{% extends "base.html"%}
+{% block content%}
+<div class="content-section">
+    <div id="editorjs"></div>
+</div>
+<button id='btnpost' class="btn btn-outline-info">Post</button>
+<button id='btndraft' class="btn btn-outline-info" action='/home'>Draft</button>
+
+<form method="POST" action="/test" enctype="multipart/form-data">
+
+  <div class="form-group">
+    {{ form.picture(class="form-control-file",id="imgform") }}
+  </div>
+  <div class="form-group">
+    {{ form.submit(class="btn btn-outline-info",id='submitform')}}
+  </div>
+</form>
+
+
+    
+{% endblock content%}
+
+{% block script %}
+
+    <!-- Load Tools -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script><!-- Image -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script><!-- List -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script><!-- Checklist -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script><!-- Quote -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script><!-- Code -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script><!-- Embed -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script><!-- Table -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/link@latest"></script><!-- Link -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script><!-- Warning -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
+    
+    <!-- Load Editor.js's Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    
+    <!-- initialize editor -->
+    <!-- <script src="../static/myeditor.js"></script> -->
+
+    <script src="../static/uploadImage.js"></script>
+    <script>
+      var editor = new EditorJS({
+    readOnly: false,
+
+    holder: 'editorjs',
+
+    tools: {
+      header: {
+        class: Header,
+        inlineToolbar: ['marker', 'link'],
+        config: {
+          placeholder: 'Header'
+        },
+        shortcut: 'CMD+SHIFT+H'
+      },
+       image: {
+          class: ImageTool,
+          config: {
+            uploader: {
+              async uploadByFile(file) {
+                
+                
+                
+                
+                imgurl=uploadImage(file);
+                
+                console.log('imgurl',imgurl);
+                return{
+                  success: 1,
+                  file: {
+                    url:imgurl
+                  }
+                }
+
+              }
+            }
+          }
+      },
+
+      list: {
+        class: List,
+        inlineToolbar: true,
+        shortcut: 'CMD+SHIFT+L'
+      },
+
+      checklist: {
+        class: Checklist,
+        inlineToolbar: true,
+      },
+
+      quote: {
+        class: Quote,
+        inlineToolbar: true,
+        config: {
+          quotePlaceholder: 'Enter a quote',
+          captionPlaceholder: 'Quote\'s author',
+        },
+        shortcut: 'CMD+SHIFT+O'
+      },
+
+      warning: Warning,
+
+      marker: {
+        class:  Marker,
+        shortcut: 'CMD+SHIFT+M'
+      },
+
+      code: {
+        class:  CodeTool,
+        shortcut: 'CMD+SHIFT+C'
+      },
+
+      delimiter: Delimiter,
+
+      inlineCode: {
+        class: InlineCode,
+        shortcut: 'CMD+SHIFT+C'
+      },
+
+      linkTool: LinkTool,
+
+      embed: Embed,
+
+      table: {
+        class: Table,
+        inlineToolbar: true,
+        shortcut: 'CMD+ALT+T'
+      },
+
+    },
+
+    
+    onReady: function(){
+      console.log('Editor.js is ready to work!')
+      
+    },
+    onChange: function(api, event) {
+      // console.log('something changed', event);
+    }
+  });
+
+  const postButton = document.getElementById('btnpost');
+  const draftButton = document.getElementById('btndraft');
+
+  // postButton.addEventListener('click',post_to_url('/test','post'));
+  postButton.addEventListener('click', ()=>{
+    editor.save()
+      .then((savedData) => {
+          post_form('/post/new','post',savedData)
+          console.log('data saved')
+      })
+      .catch((error) => {
+        console.error('Saving error', error);
+      });
+  },false);
+
+
+  function post_form(path,type,data){
+
+      const form = document.createElement('form');
+      form.method = 'post';
+      form.action = path;
+      data['type']=type;
+
+      const hiddenField = document.createElement('textarea');
+      hiddenField.name='data'
+      hiddenField.value=JSON.stringify(data)
+      form.appendChild(hiddenField)
+
+      document.body.appendChild(form);
+      form.submit();
+
+    };
+  
+    </script>
+   
+{% endblock script %}
