@@ -1,43 +1,72 @@
 {% extends "base.html"%}
+
 {% block content%}
 
-<form method="POST" action="">
-  <fieldset class="form-group">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-      {{ form.title.label(class="form-control-label")}}
+    <link href="../static/summernote/summernote-lite.css" rel="stylesheet">
+    <script src="../static/summernote/summernote-lite.js"></script>
 
-      {% if form.title.errors %}
-          {{ form.title(class="form-control form-control-lg is-invalid")}}
-          <div class="invalid-feedback">
-              {% for error in form.title.errors %}
-                  <span>{{ error }}</span>
-              {% endfor %}
 
-          </div>
-      {% else %}
-          {{ form.title(class="form-control form-control-lg")}}
-      {% endif%}
-    </div>
-    <div class="form-group">
-      {{ form.content.label(class="form-control-label")}}
+    <form>
+        <label class="form-control-label" for="title">Title</label>
+        <input id="title" name="title" class="form-control form-control-lg" required type="text">
+    </form>
+    <label class="form-control-label" >Content</label>
+    <div id="summernote"></div>
 
-      {% if form.content.errors %}
-          {{ form.username(class="form-control form-control-lg is-invalid")}}
-          <div class="invalid-feedback">
-              {% for error in form.content.errors %}
-                  <span>{{ error }}</span>
-              {% endfor %}
-          </div>
-      {% else %}
-          {{ form.content(class="form-control form-control-lg")}}
-      {% endif%}
-    </div>
+    <button id='btnpost' class="btn btn-outline-info">Post</button>
+    <button id='btndraft' class="btn btn-outline-info">Draft</button>
 
-    <div class="form-group">
-      {{ form.submit(class="btn btn-outline-info")}}
-      {{ form.save_draft(class="btn btn-outline-info")}}
-    </div>
-  </fieldset>
-</form>
+
+  <script>
+    $(document).ready(function() {
+        $('#summernote').summernote('code','<p>Hello</p>');
+    });
+  </script>
+
+  <script>
+        const postButton = document.getElementById('btnpost');
+        const draftButton = document.getElementById('btndraft');
+
+        postButton.addEventListener('click', ()=>{
+            post_form('post');
+
+        },false);
+        draftButton.addEventListener('click', ()=>{
+            post_form('draft');
+
+        },false);
+
+
+        function post_form(type){
+            
+            content= $('#summernote').summernote('code');
+
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/post/new';
+
+            const hiddeninput = document.createElement('input');
+            hiddeninput.name='type';
+            hiddeninput.type='hidden';
+            hiddeninput.value=type;
+            form.appendChild(hiddeninput);
+
+            const hiddentitle = document.createElement('input');
+            hiddentitle.name='title';
+            hiddentitle.type='hidden';
+            hiddentitle.value=$('#title').val();
+            form.appendChild(hiddentitle);
+
+            const hiddenField = document.createElement('textarea');
+            hiddenField.name='content';
+            hiddenField.style="display:none;";
+            hiddenField.value=content;
+            form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
+
+        };
+
+  </script>
 {% endblock content%}

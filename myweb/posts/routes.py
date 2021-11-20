@@ -1,4 +1,3 @@
-import re
 from flask import render_template, url_for, redirect, request, session, flash,Blueprint
 from flask_login import current_user,login_required
 from .forms import PostForm,TestForm
@@ -21,23 +20,29 @@ def post(path=''):
 @posts.route('/post/new',methods=["POST", "GET"])
 @login_required 
 def new_post():
-    form=PostForm()
-
-    if form.validate_on_submit():
-        if form.submit.data:
-            add_post= Post(title=form.title.data,content=form.content.data,author=current_user)
+    if request.method=='POST':
+        content=request.form.get('content')
+        title=request.form.get('title')
+        type=request.form.get('type')
+        print(type,title)
+        
+        if type=='post':
+            add_post= Post(title=title,content=content,author=current_user)
             db.session.add(add_post)
             db.session.commit()
-            
-        elif form.save_draft.data:
-            add_draft= Draft(title=form.title.data,content=form.content.data,author=current_user)
+        
+            flash('posted','success')
+        elif type=='draft':
+            add_draft= Draft(title=title,content=content,author=current_user)
             db.session.add(add_draft)
 
             db.session.commit()
-        
-        return redirect(url_for('home'))
+            flash('saved','success')
 
-    return render_template('new_post.html',form=form)
+        return redirect(url_for('main.home'))
+    
+    return render_template('new_post.html')
+
 
 
 @posts.route('/draft')
@@ -81,15 +86,15 @@ def saveimg():
         return 'static/picture/temp/'+picture_fn
 
 
-@posts.route('/summer',methods=["POST","GET"])
-def summer():
-    if request.method=='POST':
-        content=request.form.get('content')
-        print(content)
-        print(request.form.get('type'))
-        flash('posted','success')
+# @posts.route('/summer',methods=["POST","GET"])
+# def summer():
+#     if request.method=='POST':
+#         content=request.form.get('content')
+#         print(content)
+#         print(request.form.get('type'))
+#         flash('posted','success')
         
-        return redirect(url_for('main.home'))
+#         return redirect(url_for('main.home'))
     
-    return render_template('summernote.html')
+#     return render_template('summernote.html')
 
