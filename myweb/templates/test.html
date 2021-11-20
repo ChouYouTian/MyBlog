@@ -6,17 +6,6 @@
 <button id='btnpost' class="btn btn-outline-info">Post</button>
 <button id='btndraft' class="btn btn-outline-info" action='/home'>Draft</button>
 
-<form method="POST" action="/test" enctype="multipart/form-data">
-
-  <div class="form-group">
-    {{ form.picture(class="form-control-file",id="imgform") }}
-  </div>
-  <div class="form-group">
-    {{ form.submit(class="btn btn-outline-info",id='submitform')}}
-  </div>
-</form>
-
-
     
 {% endblock content%}
 
@@ -149,11 +138,21 @@
   const postButton = document.getElementById('btnpost');
   const draftButton = document.getElementById('btndraft');
 
-  // postButton.addEventListener('click',post_to_url('/test','post'));
   postButton.addEventListener('click', ()=>{
     editor.save()
       .then((savedData) => {
-          post_form('/post/new','post',savedData)
+          post_form('/test','post',savedData)
+          console.log('data saved')
+      })
+      .catch((error) => {
+        console.error('Saving error', error);
+      });
+  },false);
+
+  postButton.addEventListener('click', ()=>{
+    editor.save()
+      .then((savedData) => {
+          post_form('/test','post',savedData)
           console.log('data saved')
       })
       .catch((error) => {
@@ -171,6 +170,7 @@
 
       const hiddenField = document.createElement('textarea');
       hiddenField.name='data'
+      hiddenField.type='hidden'
       hiddenField.value=JSON.stringify(data)
       form.appendChild(hiddenField)
 
@@ -179,6 +179,6 @@
 
     };
   
-    </script>
+  </script>
    
 {% endblock script %}

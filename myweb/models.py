@@ -76,7 +76,8 @@ class Tag(db.Model):
 
     date_saved=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
     date_updated=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-
-
+    
     def __repr__(self) -> str:
         return f"tag('{self.id}', '{self.date_saved}')"
+
+        

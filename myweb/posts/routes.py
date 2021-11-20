@@ -1,5 +1,6 @@
-from flask import blueprints, render_template, url_for, redirect, request, session, flash,Blueprint
-from flask_login import login_user,logout_user,current_user,login_required
+import re
+from flask import render_template, url_for, redirect, request, session, flash,Blueprint
+from flask_login import current_user,login_required
 from .forms import PostForm,TestForm
 from myweb.models import Post,Draft
 from myweb import db,app
@@ -49,17 +50,15 @@ def draft():
 
 @posts.route('/test',methods=["Get","POST"])
 def test():
-    form=TestForm()
-    if form.validate_on_submit():
-        print('get submit')
-    
+
     if request.method=='POST':
         content=request.get_json()
+        content=request.form.get('data')
         print(content)
         
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     else:
-        return render_template('test.html',form=form)
+        return render_template('test.html')
 
 
 @posts.route('/saveimg',methods=["POST"])
@@ -81,4 +80,16 @@ def saveimg():
 
         return 'static/picture/temp/'+picture_fn
 
+
+@posts.route('/summer',methods=["POST","GET"])
+def summer():
+    if request.method=='POST':
+        content=request.form.get('content')
+        print(content)
+        print(request.form.get('type'))
+        flash('posted','success')
+        
+        return redirect(url_for('main.home'))
     
+    return render_template('summernote.html')
+
