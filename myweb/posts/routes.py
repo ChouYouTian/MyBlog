@@ -20,7 +20,7 @@ def post(path=''):
     
     return render_template('post.html',posts=myposts)
 
-@posts.route('/post/new',methods=["POST", "GET"])
+@posts.route('/new_post',methods=["POST", "GET"])
 @login_required 
 def new_post():
     if request.method=='POST':
