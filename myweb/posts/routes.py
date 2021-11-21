@@ -13,9 +13,12 @@ posts=Blueprint('posts',__name__)
 
 
 @posts.route('/post')
+@login_required
 def post(path=''):
+    myposts=Post.query.filter_by(user_id=current_user.id)
+    print(myposts)
     
-    return render_template('post.html',txt=path)
+    return render_template('post.html',posts=myposts)
 
 @posts.route('/post/new',methods=["POST", "GET"])
 @login_required 
