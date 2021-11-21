@@ -16,7 +16,7 @@ posts=Blueprint('posts',__name__)
 @login_required
 def post(path=''):
     myposts=Post.query.filter_by(user_id=current_user.id)
-    print(myposts)
+    # print(myposts.first())
     
     return render_template('post.html',posts=myposts)
 

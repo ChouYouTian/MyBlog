@@ -12,7 +12,8 @@
                     <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
                 </div>
                 <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
-                <p class="article-content">{{ post.content }}</p>
+                <p  class="article-content mypost">{{ post.content }}</p>
+
             </div>
         </article>
     {% endfor %}
@@ -21,6 +22,15 @@
     <h1>add some post</h1>
 
 {% endif %}
+
+<!-- turn str into html -->
+<script>
+    post= $(".mypost");
+    str=post.text();
+    post.text('');
+    html=$.parseHTML( str )
+    post.append(html);
+</script>
 
 
 
