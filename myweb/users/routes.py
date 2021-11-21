@@ -20,7 +20,7 @@ def login():
 
         user=User.query.filter_by(username=form.email_name.data).first()
         if not user:
-            user=User.query.filter_by(email=form.email.data).first()
+            user=User.query.filter_by(email=form.email_name.data).first()
 
         if user and bcrypt.check_password_hash(user.password,form.password.data):
             login_user(user,remember=form.remeber.data)

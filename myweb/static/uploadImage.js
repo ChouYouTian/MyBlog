@@ -2,7 +2,7 @@ function uploadImage(image) {
 
     console.log(image['name'])
     var formdata = new FormData();
-    formdata.append("image", image,image['name']);
+    formdata.append("image", image);
 
     var path;
     $.ajax({

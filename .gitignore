@@ -7,5 +7,5 @@ myweb/posts/__pycache__/forms.cpython-37.pyc
 myweb/posts/__pycache__/routes.cpython-37.pyc
 __pycache__/run.cpython-37.pyc
 myweb/main/__pycache__/routes.cpython-37.pyc
-myweb/users/__pycache__/
-myweb/posts/__pycache__/
+myweb/users/__pycache__/routes.cpython-37.pyc
+.gitignore

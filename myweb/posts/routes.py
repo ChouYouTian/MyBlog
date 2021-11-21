@@ -81,23 +81,26 @@ def saveimg():
         picture_fn = random_hex + f_ext
         picture_path = os.path.join(app.root_path, 'static/picture/temp', picture_fn)
 
-        print(picture_path)
+        # print(picture_path)
 
         i = Image.open(form_picture)
         i.save(picture_path)
 
+        print(form_picture)
+
         return 'static/picture/temp/'+picture_fn
 
 
-# @posts.route('/summer',methods=["POST","GET"])
-# def summer():
-#     if request.method=='POST':
-#         content=request.form.get('content')
-#         print(content)
-#         print(request.form.get('type'))
-#         flash('posted','success')
-        
-#         return redirect(url_for('main.home'))
+
+
+
+@posts.route('/summer',methods=["POST","GET"])
+def summer():
+    if request.method=='POST':
+        content=request.form.get('content')
+        # print(content)
+
+
     
-#     return render_template('summernote.html')
+    return render_template('summernote.html')
 

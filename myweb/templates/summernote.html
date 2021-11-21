@@ -19,8 +19,48 @@
 
   <script>
     $(document).ready(function() {
-        $('#summernote').summernote('code','<p>Hello</p>');
+
+        $('#summernote').summernote({
+            placeholder: 'Say something here~~',
+            height: 200,
+    
+            callbacks: {
+                onImageUpload: function(files) {
+                    imgurl=uploadImage(files[0]);
+                    imgname=files[0]['name'];
+            
+                    $('#summernote').summernote('insertImage', imgurl, imgname);
+
+                }
+            }
+        });
     });
+
+    function uploadImage(image) {
+
+        var formdata = new FormData();
+        formdata.append("image", image);
+
+        var path;
+        $.ajax({
+            url: '/saveimg',
+            cache: false,
+            contentType: false,
+            processData: false,
+            async : false,
+            data: formdata,
+            type: "post",
+            success: function(url) {
+                // console.log(url);
+                path=url;
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+        return path;
+    };
+
   </script>
 
   <script>
