@@ -8,18 +8,18 @@
       <legend class="border-bottom">Login</legend>
 
       <div class="form-group">
-        {{ form.email.label(class="form-control-label")}}
+        {{ form.email_name.label(class="form-control-label")}}
 
-        {% if form.email.errors %}
-        {{ form.email(class="form-control form-control-lg is-invalid")}}
+        {% if form.email_name.errors %}
+        {{ form.email_name(class="form-control form-control-lg is-invalid")}}
         <div class="invalid-feedback">
-          {% for error in form.email.errors %}
+          {% for error in form.email_name.errors %}
           <span>{{ error }}</span>
           {% endfor %}
 
         </div>
         {% else %}
-        {{ form.email(class="form-control form-control-lg")}}
+        {{ form.email_name(class="form-control form-control-lg")}}
         {% endif%}
       </div>
       <div class="form-group">
