@@ -24,6 +24,16 @@ def get_post(id,post_type):
  
     return post
 
+def get_posts(id,post_type):
+    if post_type=='post':
+        posts=Post.query.filter_by(user_id=id)
+    elif post_type=='draft':
+        posts=Draft.query.filter_by(user_id=id)
+    else:
+        return None
+ 
+    return posts
+
 def save_post(post,title,content):
     post.title=title
     post.content=content
@@ -38,11 +48,20 @@ def post_draft(post,title,content):
     db.session.commit()
 
 
-def add_post():
-    pass
 
-def add_draft():
-    pass
+
+def add_posts(title,content,type):
+    if type=='post':
+        add_post= Post(title=title,content=content,author=current_user)
+    elif type=='draft':
+        add_post= Draft(title=title,content=content,author=current_user)
+
+    db.session.add(add_post)
+    db.session.commit()
+
+    return True
+
+
 
 def saveimg_in_sever(img)->str:
     '''

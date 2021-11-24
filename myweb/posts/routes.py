@@ -2,26 +2,25 @@
 from flask import render_template, url_for, redirect, request, session, flash,Blueprint,abort
 from flask_login import current_user,login_required
 from .forms import PostForm,TestForm,UpdatePostForm
-from myweb.models import Post,Draft
-from myweb import db,app
-from .util import saveimg_in_sever,get_post,save_post,post_draft
+from .util import saveimg_in_sever,get_post,save_post,post_draft,\
+                    get_posts,add_posts
 
 
 posts=Blueprint('posts',__name__)
 
 
-
 @posts.route('/post')
 @login_required
 def post():
-    my_posts=Post.query.filter_by(user_id=current_user.id)
-    my_drafts=Draft.query.filter_by(user_id=current_user.id)
+    my_posts=get_posts(current_user.id,'post')
+    my_drafts=get_posts(current_user.id,'draft')
     
     return render_template('post.html',posts=my_posts,drafts=my_drafts)
 
-@posts.route('/post/<int:post_id>')
-def post_id(post_id):
-    post=Post.query.filter_by(id=post_id).first()
+@posts.route('/post_id')
+def post_id():
+    id=request.args.get('id')
+    post=get_post(id,'post')
 
     return render_template('post_id.html',post=post)
 
@@ -33,18 +32,12 @@ def post_new():
         content=request.form.get('content')
         title=request.form.get('title')
         type=request.form.get('type')
-        # print(type,title)
         
-        if type=='post':
-            add_post= Post(title=title,content=content,author=current_user)
-            db.session.add(add_post)
-            db.session.commit()
-        
+        success= add_posts(title,content,type)
+
+        if success and type=='post':
             flash('posted','success')
-        elif type=='draft':
-            add_draft= Draft(title=title,content=content,author=current_user)
-            db.session.add(add_draft)
-            db.session.commit()
+        elif success and type=='draft':
             flash('saved','success')
 
         return redirect(url_for('main.home'))
