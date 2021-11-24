@@ -12,7 +12,7 @@ users=Blueprint('users',__name__)
 def login():
 
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
 
     form = LoginForm()
 
@@ -64,7 +64,7 @@ def user():
         user = session["user"]
         return render_template("user.html", user=user)
     else:
-        return render_template("login.html")
+        return redirect(url_for('users.login'))
 
 
 

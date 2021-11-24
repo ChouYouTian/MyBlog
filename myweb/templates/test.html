@@ -1,184 +1,77 @@
 {% extends "base.html"%}
 {% block content%}
-<div class="content-section">
-    <div id="editorjs"></div>
-</div>
-<button id='btnpost' class="btn btn-outline-info">Post</button>
-<button id='btndraft' class="btn btn-outline-info" action='/home'>Draft</button>
 
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+
+        {{ form.title.label(class="form-control-label")}}
+        {% if form.title.errors %}
+            {{ form.title(class="form-control form-control-lg is-invalid")}}
+            <div class="invalid-feedback">
+                {% for error in form.title.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+
+            </div>
+        {% else %}
+            {{ form.title(class="form-control form-control-lg")}}
+        {% endif%}
+    </div>
+    <div class="form-group">
+        {{ form.content.label(class="form-control-label")}}
+
+        {% if form.content.errors %}
+        {{ form.content(class="form-control form-control-lg is-invalid")}}
+        <div class="invalid-feedback">
+          {% for error in form.content.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+
+        </div>
+        {% else %}
+        {{ form.content(class="form-control form-control-lg",id="summernote")}}
+        {% endif%}
+    </div>
+
+    <div class="form-group">
+        {{ form.save(class="btn btn-outline-info")}}
+        
+        {% if form.post_type.data=="draft" %}
+            {{ form.post(class="btn btn-outline-info")}}
+        {% endif %}
+    </div>
+    <div>
+        {{ form.id( type="hidden")}}
+        {{ form.post_type( type="hidden")}}
+
+    </div>
+</form>
+
+
+
+<link href="../static/summernote/summernote-lite.css" rel="stylesheet">
+<script src="../static/summernote/summernote-lite.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        $('#summernote').summernote({
+            placeholder: 'Say something here~~',
+            height: 200,
     
-{% endblock content%}
-
-{% block script %}
-
-    <!-- Load Tools -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script><!-- Image -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script><!-- List -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script><!-- Checklist -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script><!-- Quote -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script><!-- Code -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script><!-- Embed -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script><!-- Table -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/link@latest"></script><!-- Link -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script><!-- Warning -->
-    
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
-    
-    <!-- Load Editor.js's Core -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
-    
-    <!-- initialize editor -->
-    <!-- <script src="../static/myeditor.js"></script> -->
-
-    <script src="../static/uploadImage.js"></script>
-    <script>
-      var editor = new EditorJS({
-    readOnly: false,
-
-    holder: 'editorjs',
-
-    tools: {
-      header: {
-        class: Header,
-        inlineToolbar: ['marker', 'link'],
-        config: {
-          placeholder: 'Header'
-        },
-        shortcut: 'CMD+SHIFT+H'
-      },
-       image: {
-          class: ImageTool,
-          config: {
-            uploader: {
-              async uploadByFile(file) {
-                
-                
-                
-                
-                imgurl=uploadImage(file);
-                
-                console.log('imgurl',imgurl);
-                return{
-                  success: 1,
-                  file: {
-                    url:imgurl
-                  }
+            callbacks: {
+                onImageUpload: function(files) {
+                    imgurl=uploadImage(files[0]);
+                    imgname=files[0]['name'];
+                    $('#summernote').summernote('insertImage', imgurl, imgname);
                 }
-
-              }
             }
-          }
-      },
+        });
+    });
 
-      list: {
-        class: List,
-        inlineToolbar: true,
-        shortcut: 'CMD+SHIFT+L'
-      },
-
-      checklist: {
-        class: Checklist,
-        inlineToolbar: true,
-      },
-
-      quote: {
-        class: Quote,
-        inlineToolbar: true,
-        config: {
-          quotePlaceholder: 'Enter a quote',
-          captionPlaceholder: 'Quote\'s author',
-        },
-        shortcut: 'CMD+SHIFT+O'
-      },
-
-      warning: Warning,
-
-      marker: {
-        class:  Marker,
-        shortcut: 'CMD+SHIFT+M'
-      },
-
-      code: {
-        class:  CodeTool,
-        shortcut: 'CMD+SHIFT+C'
-      },
-
-      delimiter: Delimiter,
-
-      inlineCode: {
-        class: InlineCode,
-        shortcut: 'CMD+SHIFT+C'
-      },
-
-      linkTool: LinkTool,
-
-      embed: Embed,
-
-      table: {
-        class: Table,
-        inlineToolbar: true,
-        shortcut: 'CMD+ALT+T'
-      },
-
-    },
-
-    
-    onReady: function(){
-      console.log('Editor.js is ready to work!')
-      
-    },
-    onChange: function(api, event) {
-      // console.log('something changed', event);
-    }
-  });
-
-  const postButton = document.getElementById('btnpost');
-  const draftButton = document.getElementById('btndraft');
-
-  postButton.addEventListener('click', ()=>{
-    editor.save()
-      .then((savedData) => {
-          post_form('/test','post',savedData)
-          console.log('data saved')
-      })
-      .catch((error) => {
-        console.error('Saving error', error);
-      });
-  },false);
-
-  postButton.addEventListener('click', ()=>{
-    editor.save()
-      .then((savedData) => {
-          post_form('/test','post',savedData)
-          console.log('data saved')
-      })
-      .catch((error) => {
-        console.error('Saving error', error);
-      });
-  },false);
+</script>
+<script src="../static/post.js"></script> 
 
 
-  function post_form(path,type,data){
-
-      const form = document.createElement('form');
-      form.method = 'post';
-      form.action = path;
-      data['type']=type;
-
-      const hiddenField = document.createElement('textarea');
-      hiddenField.name='data'
-      hiddenField.type='hidden'
-      hiddenField.value=JSON.stringify(data)
-      form.appendChild(hiddenField)
-
-      document.body.appendChild(form);
-      form.submit();
-
-    };
-  
-  </script>
-   
-{% endblock script %}
+{% endblock%}

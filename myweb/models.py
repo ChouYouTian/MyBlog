@@ -48,8 +48,6 @@ class Post(db.Model):
 
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
-    tags=db.relationship('Tag',secondary=tag_relations,backref='post')
-
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
 
@@ -60,7 +58,7 @@ class Draft(db.Model):
     title=db.Column(db.String(100),nullable=False)
     content=db.Column(db.Text,nullable=False)
 
-    date_saved=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
+    date_posted=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
     date_updated=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
 
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)

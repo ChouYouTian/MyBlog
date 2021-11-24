@@ -16,7 +16,7 @@ if __name__=="__main__":
     hashedPassword=bcrypt.generate_password_hash('admin').decode('utf-8')
     user=User(username='admin',email='admin@g.c',password=hashedPassword)
     users.append(user)
-    for i in range(1,11):
+    for i in range(1,6):
         hashedPassword=bcrypt.generate_password_hash(f'test{i}').decode('utf-8')
         user=User(username=f'test{i}',email=f'test{i}@g.c',password=hashedPassword)
         users.append(user)

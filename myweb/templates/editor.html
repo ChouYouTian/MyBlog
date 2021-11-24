@@ -3,15 +3,9 @@
 {% block content%}
 
 
-<form>
-    <label class="form-control-label" for="title">Title</label>
-    <input id="title" name="title" class="form-control form-control-lg" required type="text">
-</form>
-<label class="form-control-label" >Content</label>
-<div id="summernote"></div>
+<div class="mypost">{{ post.content|safe}}</div>
 
-<button id='btnpost' class="btn btn-outline-info">Post</button>
-<button id='btndraft' class="btn btn-outline-info">Draft</button>
+
 
 
 <link href="../static/summernote/summernote-lite.css" rel="stylesheet">
@@ -20,17 +14,15 @@
 <script>
     $(document).ready(function() {
 
+        
+
         $('#summernote').summernote({
-            placeholder: 'Say something here~~',
             height: 200,
-    
             callbacks: {
                 onImageUpload: function(files) {
                     imgurl=uploadImage(files[0]);
                     imgname=files[0]['name'];
-            
                     $('#summernote').summernote('insertImage', imgurl, imgname);
-
                 }
             }
         });
@@ -38,6 +30,11 @@
 
     const postButton = document.getElementById('btnpost');
     const draftButton = document.getElementById('btndraft');
+    const editButton = document.getElementById('btnedit');
+
+    editButton.addEventListener('click',()=>{
+
+    });
 
     postButton.addEventListener('click', ()=>{
         post_form('post','/post_new');

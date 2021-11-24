@@ -1,7 +1,8 @@
 {% extends "base.html"%}
 {% block content%}
 
-
+<h2>Posts</h2>
+<hr>
 {% if posts %}
     {% for post in posts %}
         <article class="d-flex content-section">
@@ -11,8 +12,8 @@
                     <a class="mr-2" href="#">{{ post.author.username }}</a>
                     <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
                 </div>
-                <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
-                <p  class="article-content mypost">{{ post.content }}</p>
+                <h2><a class="article-title" href="{{ url_for('posts.editor',id=post.id)+'&type=post'}}">{{ post.title }}</a></h2>
+                <p  class="article-content mypost">{{ post.content|safe }}</p>
 
             </div>
         </article>
@@ -22,14 +23,38 @@
     <h1>add some post</h1>
 {% endif %}
 
+<h2>Drafts</h2>
+<hr>
+
+{% if drafts %}
+    {% for draft in drafts %}
+        <article class="d-flex content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='picture/' + draft.author.image_file) }}">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="#">{{ draft.author.username }}</a>
+                    <small class="text-muted">{{ draft.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <h2><a class="article-title" href="{{ url_for('posts.editor',id=draft.id)+'&type=draft'}}">{{ draft.title }}</a></h2>
+                <p  class="article-content mypost">{{ draft.content|safe }}</p>
+
+            </div>
+        </article>
+    {% endfor %}
+
+{% else %}
+    <h1>add some post</h1>
+{% endif %}
+
+
 <!-- turn str into html -->
-<script>
+<!-- <script>
     post= $(".mypost");
     str=post.text();
     post.text('');
     html=$.parseHTML( str )
     post.append(html);
-</script>
+</script> -->
 
 
 

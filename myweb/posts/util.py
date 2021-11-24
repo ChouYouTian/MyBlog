@@ -1,0 +1,60 @@
+import re
+from PIL import Image
+import os
+import secrets
+from myweb import app,db
+from myweb.models import Post,Draft
+from flask import url_for,redirect
+from flask_login import current_user
+from datetime import datetime
+
+
+
+def get_post(id,post_type):
+    '''
+    input: post_type=Post or Draft , id = for id in db
+    return: post in db
+    '''
+    if post_type=='post':
+        post=Post.query.get(id)
+    elif post_type=='draft':
+        post=Draft.query.get(id)
+    else:
+        return None
+ 
+    return post
+
+def save_post(post,title,content):
+    post.title=title
+    post.content=content
+    post.date_updated=datetime.utcnow()
+    db.session.commit()
+    return
+
+def post_draft(post,title,content):
+    newpost=Post(title=title,content=content,author=current_user)
+    db.session.add(newpost)
+    db.session.delete(post)
+    db.session.commit()
+
+
+def add_post():
+    pass
+
+def add_draft():
+    pass
+
+def saveimg_in_sever(img)->str:
+    '''
+    input: img file
+    return: img path in sever
+    '''
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(img.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/picture/temp', picture_fn)
+
+    i = Image.open(img)
+    i.save(picture_path)
+
+    return 'static/picture/temp/'+picture_fn
