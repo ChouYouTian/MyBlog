@@ -6,3 +6,4 @@ myweb/posts/__pycache__/forms.cpython-37.pyc
 myweb/posts/__pycache__/routes.cpython-37.pyc
 myweb/posts/__pycache__/util.cpython-37.pyc
 myweb/users/__pycache__/routes.cpython-37.pyc
+myweb/config/__pycache__/Config.cpython-37.pyc

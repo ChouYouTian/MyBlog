@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from myweb import app
+from myweb import create_app
+
+app=create_app('development')
 
 
 if __name__ == "__main__":

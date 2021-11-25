@@ -4,45 +4,34 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 import mysql
 import pymysql
-app = Flask(__name__,template_folder="templates")
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = "#230dec61-fee8-4ef2-a791-36f9e680c9fc"
+from .config.Config import config
 
 
-# using sqlite for testing
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///site.db"
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+loginManager=LoginManager()
+loginManager.login_view='users.login'
+loginManager.login_message_category='info'
 
 
-#using google cloud platform mysql
 
-# PASSWORD =""
-# PUBLIC_IP_ADDRESS =""
-# DBNAME =""
-# PROJECT_ID =""
-# INSTANCE_NAME =""
-# pymysql.install_as_MySQLdb()
-
-# app.config["SQLALCHEMY_DATABASE_URI"]= f"mysql+mysqldb://root:{PASSWORD}@{PUBLIC_IP_ADDRESS}/{DBNAME}?unix_socket=/cloudsql/{PROJECT_ID}:{INSTANCE_NAME}"
-# app.config["SQLALCHEMY_DATABASE_URI"]= f"mysql+mysqldb://root:{PASSWORD}@{PUBLIC_IP_ADDRESS}:3306/{DBNAME}/{PROJECT_ID}:{INSTANCE_NAME}"
-# app.config["SQLALCHEMY_DATABASE_URI"]= f"mysql+mysqldb://root:{PASSWORD}@{PUBLIC_IP_ADDRESS}:3306/{DBNAME}"
+def create_app(config_name):
+    app = Flask(__name__,template_folder="templates")
+    app.config.from_object(config[config_name])
+    
+    db.init_app(app)
+    bcrypt.init_app(app)
+    loginManager.init_app(app)
 
 
-db = SQLAlchemy(app)
-bcrypt=Bcrypt(app)
-loginManerger=LoginManager(app)
-loginManerger.login_view='users.login'
-loginManerger.login_message_category='info'
+    from myweb.users.routes import users
+    from myweb.posts.routes import posts
+    from myweb.main.routes import main
+    from myweb.errors.handler import errors
 
+    app.register_blueprint(users)
+    app.register_blueprint(posts)
+    app.register_blueprint(main)
+    app.register_blueprint(errors)
 
-# from myweb import routes
-
-from myweb.users.routes import users
-from myweb.posts.routes import posts
-from myweb.main.routes import main
-from myweb.errors.handler import errors
-
-app.register_blueprint(users)
-app.register_blueprint(posts)
-app.register_blueprint(main)
-app.register_blueprint(errors)
+    return app

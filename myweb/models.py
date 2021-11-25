@@ -1,10 +1,10 @@
-from myweb import db,loginManerger
+from myweb import db,loginManager
 from datetime import datetime
 from flask_login import UserMixin
 
 
 
-@loginManerger.user_loader
+@loginManager.user_loader
 def load_user(userID):
     return User.query.get(int(userID))
 

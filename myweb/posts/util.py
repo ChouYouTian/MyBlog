@@ -1,10 +1,10 @@
-import re
 from PIL import Image
 import os
 import secrets
-from myweb import app,db
+from myweb import db
 from myweb.models import Post,Draft 
 from flask_login import current_user
+from flask import current_app
 from datetime import datetime
 
 
@@ -90,7 +90,7 @@ def saveimg_in_sever(img)->str:
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(img.filename)
     picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/picture/temp', picture_fn)
+    picture_path = os.path.join(current_app.root_path, 'static/picture/temp', picture_fn)
 
     i = Image.open(img)
     i.save(picture_path)
