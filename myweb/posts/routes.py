@@ -1,14 +1,14 @@
-
 from flask import render_template, url_for, redirect, request, session, flash,Blueprint,abort
 from flask_login import current_user,login_required
 from .forms import PostForm,TestForm,UpdatePostForm
-from .util import saveimg_in_sever,get_post,save_post,post_draft,\
+from .util import saveimg_in_sever,get_post,update_post,post_draft,\
                     get_posts,add_posts
 
 
 posts=Blueprint('posts',__name__)
 
 
+#users posts and drafts
 @posts.route('/post')
 @login_required
 def post():
@@ -17,6 +17,7 @@ def post():
     
     return render_template('post.html',posts=my_posts,drafts=my_drafts)
 
+#get post by post id
 @posts.route('/post_id')
 def post_id():
     id=request.args.get('id')
@@ -24,7 +25,7 @@ def post_id():
 
     return render_template('post_id.html',post=post)
 
-
+#create new post or draft
 @posts.route('/post_new',methods=["POST", "GET"])
 @login_required 
 def post_new():
@@ -44,6 +45,8 @@ def post_new():
     
     return render_template('new_post.html')
 
+
+#edit post or edit draft and post as post
 @posts.route('/editor',methods=["POST", "GET"])
 @login_required
 def editor():
@@ -52,7 +55,7 @@ def editor():
     if form.validate_on_submit():
         post=get_post(form.id.data,form.post_type.data)
         if form.save.data:
-            save_post(post,form.title.data,form.content.data)
+            update_post(post,form.title.data,form.content.data)
         elif form.post.data:
             post_draft(post,form.title.data,form.content.data)
 
@@ -79,12 +82,16 @@ def editor():
 
 
 
-
+#saving img in sever and return path
 @posts.route('/saveimg',methods=["POST"])
+@login_required
 def saveimg():
     if request.method=='POST':
         form_picture=request.files.get('image')
         return saveimg_in_sever(form_picture)
+
+
+
 
 
 @posts.route('/summer',methods=["POST","GET"])
@@ -103,7 +110,7 @@ def test():
     if form.validate_on_submit():
         post=get_post(form.id.data,form.post_type.data)
         if form.save.data:
-            save_post(post,form.title.data,form.content.data)
+            update_post(post,form.title.data,form.content.data)
         elif form.post.data:
             post_draft(post,form.title.data,form.content.data)
 

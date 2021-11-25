@@ -3,8 +3,7 @@ from PIL import Image
 import os
 import secrets
 from myweb import app,db
-from myweb.models import Post,Draft
-from flask import url_for,redirect
+from myweb.models import Post,Draft 
 from flask_login import current_user
 from datetime import datetime
 
@@ -13,7 +12,8 @@ from datetime import datetime
 def get_post(id,post_type):
     '''
     input: post_type=Post or Draft , id = for id in db
-    return: post in db
+    return: post or none
+    get post by id and type of post(ex.post draft)
     '''
     if post_type=='post':
         post=Post.query.get(id)
@@ -25,6 +25,11 @@ def get_post(id,post_type):
     return post
 
 def get_posts(id,post_type):
+    '''
+    input: post_type=Post or Draft , id = for id in db
+    return: posts or none
+    get posts filter by id and type of post(ex.post draft)
+    '''
     if post_type=='post':
         posts=Post.query.filter_by(user_id=id)
     elif post_type=='draft':
@@ -34,12 +39,26 @@ def get_posts(id,post_type):
  
     return posts
 
-def save_post(post,title,content):
+def update_post(post,title,content):
+
     post.title=title
     post.content=content
     post.date_updated=datetime.utcnow()
     db.session.commit()
     return
+
+def update_post(id,post_type,title,content):
+    if post_type=='post':
+        post=Post.query.get(id)
+    elif post_type=='draft':
+        post=Draft.query.get(id)
+        
+    post.title=title
+    post.content=content
+    post.date_updated=datetime.utcnow()
+    db.session.commit()
+    return
+
 
 def post_draft(post,title,content):
     newpost=Post(title=title,content=content,author=current_user)
