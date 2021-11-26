@@ -1,4 +1,4 @@
-from flask import Blueprint,render_template,render_template, url_for, redirect, request, session, flash
+from flask import Blueprint,render_template,render_template, url_for, redirect, request, session, flash,abort
 from myweb import db,bcrypt
 from flask_login import login_user,logout_user,current_user,login_required
 from myweb.models import User
@@ -30,6 +30,8 @@ def login():
             return redirect(next_page) if next_page else  redirect(url_for('main.home'))
         else:
             flash('Failed to login . Please check email and password', 'danger')
+    
+    
     return render_template('login.html', form=form)
 
 
@@ -54,8 +56,10 @@ def signup():
 
         flash(f'Account created for {form.username.data}! You can login now', 'success')
         return redirect(url_for('users.login'))
-
-    return render_template('signup.html', form=form)
+    elif request.path=='GET':
+        return render_template('signup.html', form=form)
+    else:
+        return render_template('signup.html', form=form),400
 
 
 @users.route('/user')
@@ -92,6 +96,10 @@ def account():
         form.username.data=current_user.username
         form.email.data=current_user.email
 
+        imagefile=url_for('static',filename='picture/'+current_user.image_file)
+        return render_template("account.html",image_file=imagefile,form=form)
+    
+    else:
+        imagefile=url_for('static',filename='picture/'+current_user.image_file)
+        return render_template("account.html",image_file=imagefile,form=form),400
 
-    imagefile=url_for('static',filename='picture/'+current_user.image_file)
-    return render_template("account.html",image_file=imagefile,form=form)

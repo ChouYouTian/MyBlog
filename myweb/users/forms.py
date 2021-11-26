@@ -14,7 +14,6 @@ class SignUpForm(FlaskForm):
     confirmPassword=PasswordField('Confirm Password',validators=[DataRequired(),EqualTo('password')])
 
 
-
     submit=SubmitField('SignUp')
 
     def validate_email(self,email):
