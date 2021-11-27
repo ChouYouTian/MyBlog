@@ -36,6 +36,8 @@ class User(db.Model,UserMixin):
         return f'User(id {self.id},name {self.username})'
 
 
+
+
 class Post(db.Model):
 
     id=db.Column(db.Integer,primary_key=True)
@@ -44,7 +46,7 @@ class Post(db.Model):
     content=db.Column(db.Text,nullable=False)
 
     date_posted=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-    date_updated=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
+    date_updated=db.Column(db.DateTime)
 
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
@@ -70,11 +72,9 @@ class Tag(db.Model):
 
     id=db.Column(db.Integer,primary_key=True)
 
-    tag_type=db.Column(db.String(20),nullable=False)
+    tag_type=db.Column(db.String(20),nullable=False,unique=True)
 
-    date_saved=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-    date_updated=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-    
+
     def __repr__(self) -> str:
         return f"tag('{self.id}', '{self.date_saved}')"
 
