@@ -1,12 +1,10 @@
 from flask import Blueprint,render_template,render_template, url_for, redirect, request, session, flash,abort
-from myweb import db,bcrypt
 from flask_login import login_user,logout_user,current_user,login_required
-from myweb.models import User
 from .forms import LoginForm,UpdateAccountForm,SignUpForm
-from .utils import save_picture
-
+from .utils import update_account,sign_up_user,check_user
 
 users=Blueprint('users',__name__)
+
 
 @users.route('/login', methods=["POST", "GET"])
 def login():
@@ -17,22 +15,24 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-
-        user=User.query.filter_by(username=form.email_name.data).first()
-        if not user:
-            user=User.query.filter_by(email=form.email_name.data).first()
-
-        if user and bcrypt.check_password_hash(user.password,form.password.data):
+        user=check_user(form.email_name.data,form.password.data)
+        
+        if user:
             login_user(user,remember=form.remeber.data)
 
             next_page=request.args.get('next')
-
             return redirect(next_page) if next_page else  redirect(url_for('main.home'))
+        
         else:
             flash('Failed to login . Please check email and password', 'danger')
+            return render_template('users/login.html', form=form),401
     
+    elif request.method=="GET":
+        return render_template('users/login.html', form=form)
     
-    return render_template('login.html', form=form)
+    else:
+        flash('Failed to login . Please check email and password', 'danger')
+        return render_template('users/login.html', form=form),401
 
 
 
@@ -48,30 +48,24 @@ def signup():
     form = SignUpForm()
 
     if form.validate_on_submit():
-        hashedPassword=bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user=User(username=form.username.data,email=form.email.data,password=hashedPassword)
 
-        db.session.add(user)
-        db.session.commit()
+        sign_up_user(form.username.data,form.email.data,form.password.data)
 
         flash(f'Account created for {form.username.data}! You can login now', 'success')
         return redirect(url_for('users.login'))
     elif request.path=='GET':
-        return render_template('signup.html', form=form)
+        return render_template('users/signup.html', form=form)
     else:
-        return render_template('signup.html', form=form),400
+        return render_template('users/signup.html', form=form),400
 
 
 @users.route('/user')
 def user():
     if 'user' in session:
         user = session["user"]
-        return render_template("user.html", user=user)
+        return render_template("users/user.html", user=user)
     else:
         return redirect(url_for('users.login'))
-
-
-
 
 
 
@@ -81,15 +75,8 @@ def account():
     form=UpdateAccountForm()
 
     if form.validate_on_submit():
-        if form.picture.data:
-            picturefile=save_picture(form.picture.data)
-            current_user.image_file=picturefile
+        update_account(form.username.data,form.email.data,form.picture.data)
         
-        current_user.username=form.username.data
-        current_user.email=form.email.data
-
-        db.session.commit()
-
         flash('Your account has been updated!', 'success')
         return redirect(url_for('users.account'))
     elif request.method=='GET':
@@ -97,9 +84,9 @@ def account():
         form.email.data=current_user.email
 
         imagefile=url_for('static',filename='picture/'+current_user.image_file)
-        return render_template("account.html",image_file=imagefile,form=form)
+        return render_template("users/account.html",image_file=imagefile,form=form)
     
     else:
         imagefile=url_for('static',filename='picture/'+current_user.image_file)
-        return render_template("account.html",image_file=imagefile,form=form),400
+        return render_template("users/account.html",image_file=imagefile,form=form),400
 

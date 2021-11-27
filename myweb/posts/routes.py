@@ -15,7 +15,7 @@ def post():
     my_posts=get_posts(current_user.id,'post')
     my_drafts=get_posts(current_user.id,'draft')
     
-    return render_template('post.html',posts=my_posts,drafts=my_drafts)
+    return render_template('posts/post.html',posts=my_posts,drafts=my_drafts)
 
 #get post by post id
 @posts.route('/post_id')
@@ -23,7 +23,7 @@ def post_id():
     id=request.args.get('id')
     post=get_post(id,'post')
 
-    return render_template('post_id.html',post=post)
+    return render_template('posts/post_id.html',post=post)
 
 #create new post or draft
 @posts.route('/post_new',methods=["POST", "GET"])
@@ -43,7 +43,7 @@ def post_new():
 
         return redirect(url_for('main.home'))
     
-    return render_template('new_post.html')
+    return render_template('posts/new_post.html')
 
 
 #edit post or edit draft and post as post
@@ -76,9 +76,12 @@ def editor():
             form.content.data=post.content
             form.title.data=post.title
 
+            return render_template('posts/editor.html',form=form)
+        else:
+            return render_template('errors/404.html'),404
 
-    return render_template('test.html',form=form)
-
+    else:
+        return render_template('errors/403.html'),403
 
 
 
@@ -99,7 +102,7 @@ def summer():
     if request.method=='POST':
         content=request.form.get('content')
         # print(content)
-    return render_template('summernote.html')
+    return render_template('posts/summernote.html')
 
 
 
@@ -132,7 +135,7 @@ def test():
             form.title.data=post.title
 
 
-    return render_template('test.html',form=form)
+    return render_template('posts/test.html',form=form)
 
 
 
