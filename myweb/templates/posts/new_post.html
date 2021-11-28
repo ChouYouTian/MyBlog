@@ -1,17 +1,46 @@
 {% extends "base.html"%}
 
 {% block content%}
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
 
+        {{ form.title.label(class="form-control-label")}}
+        {% if form.title.errors %}
+            {{ form.title(class="form-control form-control-lg is-invalid")}}
+            <div class="invalid-feedback">
+                {% for error in form.title.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
 
-<form>
-    <label class="form-control-label" for="title">Title</label>
-    <input id="title" name="title" class="form-control form-control-lg" required type="text">
+            </div>
+        {% else %}
+            {{ form.title(class="form-control form-control-lg")}}
+        {% endif%}
+    </div>
+    <div class="form-group">
+        {{ form.content.label(class="form-control-label")}}
+
+        {% if form.content.errors %}
+        {{ form.content(class="form-control form-control-lg is-invalid")}}
+        <div class="invalid-feedback">
+          {% for error in form.content.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+
+        </div>
+        {% else %}
+        {{ form.content(class="form-control form-control-lg",id="summernote")}}
+        {% endif%}
+    </div>
+
+    <div class="form-group">
+        {{ form.submit(class="btn btn-outline-info")}}
+        {{ form.save_draft(class="btn btn-outline-info")}}
+ 
+    </div>
+  
 </form>
-<label class="form-control-label" >Content</label>
-<div id="summernote"></div>
-
-<button id='btnpost' class="btn btn-outline-info">Post</button>
-<button id='btndraft' class="btn btn-outline-info">Draft</button>
 
 
 <link href="../static/summernote/summernote-lite.css" rel="stylesheet">
@@ -34,18 +63,6 @@
             }
         });
     });
-
-    const postButton = document.getElementById('btnpost');
-    const draftButton = document.getElementById('btndraft');
-
-    postButton.addEventListener('click', ()=>{
-        post_form('post','/post_new');
-
-    },false);
-    draftButton.addEventListener('click', ()=>{
-        post_form('draft','/post_new');
-
-    },false);
 
 
 </script>

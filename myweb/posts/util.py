@@ -70,7 +70,7 @@ def post_draft(post,title,content):
 
 
 
-def add_post(title,content,type):
+def add_post(title,content,type:str):
     try:
         if type=='post':
             add_post= Post(title=title,content=content,author=current_user)

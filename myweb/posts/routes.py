@@ -30,24 +30,33 @@ def post_id():
 @posts.route('/post_new',methods=["POST", "GET"])
 @login_required 
 def post_new():
-    if request.method=='POST':
-        content=request.form.get('content')
-        title=request.form.get('title')
-        type=request.form.get('type')
-        
-        success= add_post(title,content,type)
 
-        if success and type=='post':
-            flash('posted','success')
-        elif success and type=='draft':
-            flash('Draft saved','success')
-        else:
+    form=PostForm()
+    if form.validate_on_submit():
+        success=False
+        if form.submit.data:
+            success= add_post(form.title.data,form.content.data,'post')
+            if success:
+                flash('posted','success')
+
+        elif form.save_draft.data:
+            print('do draft')
+            success= add_post(form.title.data,form.content.data,'draft')
+            if success :
+                flash('Draft saved','success')
+ 
+        if not success:
             flash('Failed! Please try again', 'danger')
-
-        return redirect(url_for('main.home'))
+            return render_template('posts/new_post.html',form=form)
+        else:
+            return redirect(url_for('posts.post'))
 
     elif request.method=="GET":
-        return render_template('posts/new_post.html')
+        return render_template('posts/new_post.html',form=form)
+   
+    else:
+        return render_template('errors/404.html'),404
+
 
 
 #edit post or edit draft and post as post
