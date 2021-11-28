@@ -23,7 +23,7 @@ def save_picture(form_picture):
 
     return picture_fn
 
-def get_user_by_id_Email(email_name):
+def get_user_by_name_Email(email_name):
     if isEmail(email_name):
         user=User.query.filter_by(email=email_name).first()
     else:
@@ -54,7 +54,7 @@ def sign_up_user(username,email,password):
     return True
 
 def check_user(email_name,password):
-    user=get_user_by_id_Email(email_name)
+    user=get_user_by_name_Email(email_name)
 
     if user and bcrypt.check_password_hash(user.password,password):
         return user
