@@ -1,5 +1,6 @@
 import secrets
 import os
+import re
 from PIL import Image
 from myweb import db,bcrypt
 from myweb.models import User
@@ -23,10 +24,11 @@ def save_picture(form_picture):
     return picture_fn
 
 def get_user_by_id_Email(email_name):
-    user=User.query.filter_by(username=email_name).first()
-    if not user:
+    if isEmail(email_name):
         user=User.query.filter_by(email=email_name).first()
-    
+    else:
+        user=User.query.filter_by(username=email_name).first()
+
     return user
 
 
@@ -58,3 +60,9 @@ def check_user(email_name,password):
         return user
     else:
         return False
+
+def isEmail(string):
+    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]\b'
+    if re.fullmatch(regex,string):
+        return True
+    return False
