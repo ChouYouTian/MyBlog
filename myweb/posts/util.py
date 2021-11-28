@@ -15,13 +15,12 @@ def get_post(id,post_type):
     return: post or none
     get post by id and type of post(ex.post draft)
     '''
+    
     if post_type=='post':
-        post=Post.query.get(id)
+        post=Post.query.get_or_404(id)
     elif post_type=='draft':
-        post=Draft.query.get(id)
-    else:
-        return None
- 
+        post=Draft.query.get_or_404(id)
+
     return post
 
 def get_posts(id,post_type):
@@ -39,44 +38,50 @@ def get_posts(id,post_type):
  
     return posts
 
-def update_post(post,title,content):
 
-    post.title=title
-    post.content=content
-    post.date_updated=datetime.utcnow()
-    db.session.commit()
-    return
-
-def update_post(id,post_type,title,content):
-    if post_type=='post':
-        post=Post.query.get(id)
-    elif post_type=='draft':
-        post=Draft.query.get(id)
-        
-    post.title=title
-    post.content=content
-    post.date_updated=datetime.utcnow()
-    db.session.commit()
-    return
+def update_post(post,title:str,content:str):
+    """
+    select post by id and post_type and update with new title or content 
+    """
+    try:
+        post.title=title
+        post.content=content
+        post.date_updated=datetime.utcnow()
+        db.session.commit()
+    except:
+        db.session.rollback()
+        return False
+    else:
+        return True
 
 
 def post_draft(post,title,content):
-    newpost=Post(title=title,content=content,author=current_user)
-    db.session.add(newpost)
-    db.session.delete(post)
-    db.session.commit()
+    try:
+        newpost=Post(title=title,content=content,author=current_user)
+        db.session.add(newpost)
+        db.session.delete(post)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        return False
+    else:
+        return True
 
 
 
 
-def add_posts(title,content,type):
-    if type=='post':
-        add_post= Post(title=title,content=content,author=current_user)
-    elif type=='draft':
-        add_post= Draft(title=title,content=content,author=current_user)
+def add_post(title,content,type):
+    try:
+        if type=='post':
+            add_post= Post(title=title,content=content,author=current_user)
+        elif type=='draft':
+            add_post= Draft(title=title,content=content,author=current_user)
 
-    db.session.add(add_post)
-    db.session.commit()
+        db.session.add(add_post)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return False
 
     return True
 

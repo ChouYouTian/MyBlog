@@ -2,8 +2,6 @@ from myweb import db,loginManager
 from datetime import datetime
 from flask_login import UserMixin
 
-
-
 @loginManager.user_loader
 def load_user(userID):
     return User.query.get(int(userID))
@@ -46,7 +44,7 @@ class Post(db.Model):
     content=db.Column(db.Text,nullable=False)
 
     date_posted=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-    date_updated=db.Column(db.DateTime)
+    date_updated=db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
 
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 

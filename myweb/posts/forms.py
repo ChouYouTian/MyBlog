@@ -21,9 +21,5 @@ class TestForm(FlaskForm):
 class UpdatePostForm(FlaskForm):
     title=StringField('Title',validators=[DataRequired()])
     content=TextAreaField('Content',validators=[DataRequired()])
-
-    id=IntegerField('ID')
-    post_type=StringField('Type')
-
     save=SubmitField('Save')
     post=SubmitField('Post')

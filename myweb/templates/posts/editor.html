@@ -37,15 +37,11 @@
     <div class="form-group">
         {{ form.save(class="btn btn-outline-info")}}
         
-        {% if form.post_type.data=="draft" %}
+        {% if post_type=="draft" %}
             {{ form.post(class="btn btn-outline-info")}}
         {% endif %}
     </div>
-    <div>
-        {{ form.id( type="hidden")}}
-        {{ form.post_type( type="hidden")}}
-
-    </div>
+  
 </form>
 
 
