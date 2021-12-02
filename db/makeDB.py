@@ -6,6 +6,7 @@ sys.path.append(path)
 
 from myweb import db,bcrypt,create_app
 from myweb.models import User
+
 app=create_app('development')
 
 if __name__=="__main__":

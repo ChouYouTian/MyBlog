@@ -15,6 +15,7 @@ class DevelopmentConfig(BaseConfig):
     # "SQLALCHEMY_DATABASE_URI"= f"mysql+mysqldb://root:{PASSWORD}@{PUBLIC_IP_ADDRESS}:3306/{DBNAME}"
 
     SQLALCHEMY_DATABASE_URI = "sqlite:///site.db"
+    # SQLALCHEMY_ECHO=True
 
 class TestingConfig(BaseConfig):
     TESTING = True

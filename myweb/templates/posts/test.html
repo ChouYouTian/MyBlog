@@ -35,31 +35,41 @@
     </div>
 
     <div class="form-group">
-        {{ form.save(class="btn btn-outline-info")}}
+        {{ form.post(class="btn btn-outline-info")}}
         
-        {% if form.post_type.data=="draft" %}
-            {{ form.post(class="btn btn-outline-info")}}
+        {% if post_type=="draft" %}
+            {{ form.save_draft(class="btn btn-outline-info")}}
         {% endif %}
     </div>
-    <div>
-        {{ form.id( type="hidden")}}
-        {{ form.post_type( type="hidden")}}
-
+    <div  class="form-group"id="tag-group">
+        {{ form.tags(class="form-control form-control-lg",type="hidden",id="tagform")}}
+        
     </div>
 </form>
+
+<div id="tag-group" >
+    <div id="tag"></div>
+</div>
+
+<div id="taglist" style="display: none;">{{tags}}</div>
 
 
 
 <link href="../static/summernote/summernote-lite.css" rel="stylesheet">
 <script src="../static/summernote/summernote-lite.js"></script>
 
+<!-- <link href="../../static/summernote/summernote-bs4.css" rel="stylesheet">
+<script src="../../static/summernote/summernote-bs4.js"></script> -->
+
 <script>
     $(document).ready(function() {
+        
+        const taglist=$('#taglist').text().split(',');
+
 
         $('#summernote').summernote({
             placeholder: 'Say something here~~',
-            height: 200,
-    
+            height: 200,    
             callbacks: {
                 onImageUpload: function(files) {
                     imgurl=uploadImage(files[0]);
@@ -68,6 +78,46 @@
                 }
             }
         });
+
+
+        $('#tag').summernote({
+            height: 100,
+            toolbar: false,
+            hint: {
+                mentions: taglist,
+                match: /\B#(\w*)$/,
+                search: function (keyword, callback) {
+                    callback($.grep(this.mentions, function (item) {
+                        return item.indexOf(keyword) == 0;
+                    }));
+                },
+                content: function (item) {
+                    $('#tagform').val(function(i,v){
+                        return v+item+' '
+                    });                    
+                    return '#'+item;
+
+                }    
+            },
+            callbacks: {
+                onChange: function(contents, $editable) {
+                    // console.log('onChange:', contents,typeof contents);
+                    console.log(contents)
+                    // len=contents.length
+                    // console.log(contents.charAt(len-5))
+                    // // console.log(contents.substring(3,len-4))
+                    // $('#tagform').val(contents.substring(3,len-4));     
+                    // $('#tagform').val($('.note-editable p').val());     
+                    console.log($('div[class="note-editable"] p').val);
+
+                }
+            }
+
+        });
+
+        $('#tag-group .note-statusbar').hide();  
+
+
     });
 
 </script>

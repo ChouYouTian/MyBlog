@@ -6,12 +6,17 @@ from flask_login import UserMixin
 def load_user(userID):
     return User.query.get(int(userID))
 
-tag_relations=db.Table(
-    'tag_relations',
+post_tag_relations=db.Table(
+    'post_tag_relations',
     db.Column('tag_rel',db.Integer,db.ForeignKey('tag.id')),
     db.Column('post_rel',db.Integer,db.ForeignKey('post.id'))
 )
 
+draft_tag_relations=db.Table(
+    'draft_tag_relations',
+    db.Column('tag_rel',db.Integer,db.ForeignKey('tag.id')),
+    db.Column('draft_rel',db.Integer,db.ForeignKey('draft.id'))
+)
 
 class User(db.Model,UserMixin):
 
@@ -48,6 +53,9 @@ class Post(db.Model):
 
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
+    tag_rel = db.relationship(
+        "Tag", secondary=post_tag_relations, backref="post")
+
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
 
@@ -63,6 +71,9 @@ class Draft(db.Model):
 
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'),nullable=False)
 
+    tag_rel = db.relationship(
+        "Tag", secondary=draft_tag_relations, backref="draft")
+
     def __repr__(self):
         return f"Draft('{self.title}', '{self.date_posted}')"
 
@@ -72,8 +83,7 @@ class Tag(db.Model):
 
     tag_type=db.Column(db.String(20),nullable=False,unique=True)
 
-
     def __repr__(self) -> str:
-        return f"tag('{self.id}', '{self.date_saved}')"
+        return f"tag('{self.id}')"
 
         

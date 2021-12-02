@@ -63,15 +63,22 @@ class SettingBase(TestCase):
                                     })
         return response
     def post(self,title='title',content='content',submit=True,save=False):
-    
-        response=self.client.post(url_for('posts.post_new'),
+        if submit==True:
+            response=self.client.post(url_for('posts.post_new'),
                                         follow_redirects=True,
                                         data={
                                             "title": title,
                                             "content":content,
-                                            "submit":submit,
-                                            "save_draft":save
+                                            "submit":submit
                                         })
+        elif save:
+            response=self.client.post(url_for('posts.post_new'),
+                                    follow_redirects=True,
+                                    data={
+                                        "title": title,
+                                        "content":content,
+                                        "save_draft":save
+                                    })
         return response
 
         

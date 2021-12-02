@@ -1,9 +1,8 @@
-from operator import pos
-from flask import render_template, url_for, redirect, request, session, flash,Blueprint,abort
+from flask import render_template, url_for, redirect, request,flash,Blueprint
 from flask_login import current_user,login_required
 from .forms import PostForm,TestForm,UpdatePostForm
 from .util import saveimg_in_sever,get_post,update_post,post_draft,\
-                    get_posts,add_post
+                    get_posts,add_post,test_add_post
 
 
 posts=Blueprint('posts',__name__)
@@ -16,7 +15,7 @@ def post():
     my_posts=get_posts(current_user.id,'post')
     my_drafts=get_posts(current_user.id,'draft')
     
-    return render_template('posts/post.html',posts=my_posts,drafts=my_drafts)
+    return render_template('posts/mypost.html',posts=my_posts,drafts=my_drafts)
 
 #get post by post id
 @posts.route('/post_id')
@@ -34,25 +33,26 @@ def post_new():
     form=PostForm()
     if form.validate_on_submit():
         success=False
-        if form.submit.data:
-            success= add_post(form.title.data,form.content.data,'post')
+        if form.post.data:
+            print(form.tags.data)
+            success= add_post(form.title.data,form.content.data,form.tags.data,'post')
             if success:
                 flash('posted','success')
 
-        elif form.save_draft.data:
-            print('do draft')
-            success= add_post(form.title.data,form.content.data,'draft')
+        elif form.save.data:
+   
+            success= add_post(form.title.data,form.content.data,form.tags.data,'draft')
             if success :
                 flash('Draft saved','success')
  
         if not success:
             flash('Failed! Please try again', 'danger')
-            return render_template('posts/new_post.html',form=form)
+            return render_template('posts/editor.html',form=form,post_type='new')
         else:
             return redirect(url_for('posts.post'))
 
     elif request.method=="GET":
-        return render_template('posts/new_post.html',form=form)
+        return render_template('posts/editor.html',form=form,post_type='new')
    
     else:
         return render_template('errors/404.html'),404
@@ -74,11 +74,11 @@ def editor():
     if post.author!=current_user:
         return render_template('errors/403.html'),403
 
-    form=UpdatePostForm()
+    form=PostForm()
     if form.validate_on_submit():
 
         if form.save.data:
-            success=update_post(post,title=form.title.data,content=form.content.data)
+            success=update_post(post,title=form.title.data,content=form.content.data,tagstr=form.tags.data)
             if success:
                 flash('Your post has been updated!', 'success')
                 return redirect(url_for('main.home'))
@@ -98,10 +98,14 @@ def editor():
     elif request.method=='GET':
         form.content.data=post.content
         form.title.data=post.title
+        tagstr=''
+        for tag in post.tag_rel:
+            tagstr+='#'+tag.tag_type+' '
+        form.tags.data=tagstr
         return render_template('posts/editor.html',form=form,post_type=post_type)
 
     else:
-        return render_template('errors/403.html'),403
+        return render_template('errors/404.html'),404
 
 
 
@@ -112,6 +116,14 @@ def saveimg():
     if request.method=='POST':
         form_picture=request.files.get('image')
         return saveimg_in_sever(form_picture)
+
+@posts.route('/search')
+def search():
+    tag=request.args.get('tag')
+    if tag:
+     
+        posts=get_posts(tag)
+        return render_template('posts/search.html',posts=posts)
 
 
 
@@ -126,36 +138,21 @@ def summer():
 
 
 @posts.route('/test',methods=["Get","POST"])
+@login_required 
 def test():
 
-    form=UpdatePostForm()
+    form=PostForm()
     if form.validate_on_submit():
-        post=get_post(form.id.data,form.post_type.data)
-        if form.save.data:
-            update_post(post,form.title.data,form.content.data)
-        elif form.post.data:
-            post_draft(post,form.title.data,form.content.data)
-
-        flash('Your post has been updated!', 'success')
-
-        return redirect(url_for('main.home'))
-
-    elif request.method=='GET':
-        id=request.args.get('id')
-        post_type=request.args.get('type')
-        # print(id,type(post_type))
-
-        post=get_post(id,post_type)
-
-        if post:
-            form.id.data=id
-            form.post_type.data=post_type
-            form.content.data=post.content
-            form.title.data=post.title
+        success=False
+        if form.post.data:
+            print(form.tags.data)
+            success= test_add_post(form.title.data,form.content.data,form.tags.data,'post')
+            if success:
+                flash('posted','success')
 
 
-    return render_template('posts/test.html',form=form)
+        return render_template('posts/test.html',form=form)
 
-
-
-
+    elif request.method=="GET":
+        return render_template('posts/test.html',form=form,tags='apple,Apple,banana')
+   
