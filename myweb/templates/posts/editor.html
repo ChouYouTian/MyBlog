@@ -15,7 +15,7 @@
 
             </div>
         {% else %}
-            {{ form.title(class="form-control form-control-lg")}}
+            {{ form.title(class="form-control form-control-lg",id='formtitle')}}
         {% endif%}
     </div>
     <div class="form-group">
@@ -41,6 +41,10 @@
         {% if post_type=="draft"  or post_type=="new" %}
             {{ form.post(class="btn btn-outline-info")}}
         {% endif %}
+
+        {% if post_type!='new' %}
+            {{ form.delete(class="btn btn-danger",onclick="delFunction()")}}
+        {% endif %}
     </div>
     <div  class="form-group"id="tag-group">
         {{ form.tags(class="form-control form-control-lg",id="tagform")}}
@@ -63,6 +67,16 @@
 <script src="../static/summernote/summernote-lite.js"></script>
 
 <script>
+    function delFunction() {
+        const title=$('#formtitle').val()
+
+        if (confirm("確定要刪除\n"+title)) {
+            return true
+        } else {
+            return false
+        };
+        
+    }
     $(document).ready(function() {
         const hintlist=$('#hintlist').text().split(',');
 
@@ -79,9 +93,9 @@
             }
         });
 
-        $('#tag').summernote({
-            height: 100,
-            toolbar: false,
+        // $('#tag').summernote({
+        //     height: 100,
+        //     toolbar: false,
             // hint: {
             //     mentions: hintlist,
             //     match: /\B#(\w*)$/,
@@ -97,9 +111,10 @@
             //         return '#'+item;
             //     }    
             // }
-        });
+        // });
 
-        $('#tag-group .note-statusbar').hide();
+        // $('#tag-group .note-statusbar').hide();
+
     });
 
 </script>

@@ -136,6 +136,15 @@ def add_post(title,content,tagstr,type:str):
 
     return True
 
+def delete_post(post:Post):
+    try:
+        db.session.delete(post)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        return False
+
+    return True
 
 
 

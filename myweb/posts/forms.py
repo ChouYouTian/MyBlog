@@ -12,6 +12,7 @@ class PostForm(FlaskForm):
 
     post=SubmitField('Post')
     save=SubmitField('Save')
+    delete=SubmitField('Delete')
 
 class UpdatePostForm(FlaskForm):
     title=StringField('Title',validators=[DataRequired()])
@@ -24,3 +25,6 @@ class TestForm(FlaskForm):
     picture=FileField('Update Profile Picture',validators=[FileAllowed(['jpg','png'])])
     submit=SubmitField('send img')
 
+class DeleteForm(FlaskForm):
+    delete=SubmitField('Delete')
+    

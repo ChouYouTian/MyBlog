@@ -1,9 +1,9 @@
 {% extends "base.html"%}
 {% block content%}
 
-<h2>My Posts</h2>
-<hr>
 {% if posts %}
+    <h2>My Posts</h2>
+    <hr>
     {% for post in posts %}
         <article class="d-flex content-section">
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='picture/' + post.author.image_file) }}">
@@ -11,11 +11,13 @@
                 <div class="article-metadata">
                     <a class="mr-2" href="#">{{ post.author.username }}</a>
                     <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+
                 </div>
                 <h2><a class="article-title" href="{{ url_for('posts.editor',id=post.id)+'&type=post'}}">{{ post.title }}</a></h2>
-                <p  class="article-content mypost">{{ post.content|safe }}</p>
+                <p  class="article-content ">{{ post.content|safe }}</p>
 
             </div>
+            <button  onclick="delFunction(this)" class="btn btn-danger" data-id={{post.id}} data-type="post" data-title={{post.title}}>Delete</button>
         </article>
     {% endfor %}
 
@@ -23,10 +25,10 @@
     <h1>add some post</h1>
 {% endif %}
 
-<h2>My Drafts</h2>
-<hr>
-
 {% if drafts %}
+
+    <h2>My Drafts</h2>
+    <hr>
     {% for draft in drafts %}
         <article class="d-flex content-section">
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='picture/' + draft.author.image_file) }}">
@@ -39,6 +41,7 @@
                 <p  class="article-content mypost">{{ draft.content|safe }}</p>
 
             </div>
+            <button  onclick="delFunction(this)" class="btn btn-danger" data-id={{draft.id}} data-type="draft" data-title={{draft.title}}>Delete</button>
         </article>
     {% endfor %}
 
@@ -46,16 +49,28 @@
     <h1>add some post</h1>
 {% endif %}
 
+<form id="delform" method="post">
+    {{ form.hidden_tag() }}
 
-<!-- turn str into html -->
-<!-- <script>
-    post= $(".mypost");
-    str=post.text();
-    post.text('');
-    html=$.parseHTML( str )
-    post.append(html);
-</script> -->
+    {{ form.delete(type="hidden")}}
 
+</form>
+
+
+<script>
+    
+    function delFunction(elmnt) {
+        if (confirm("確定要刪除 \n"+elmnt.dataset.title)) {
+            const form=$("#delform")
+            form.attr('action','/delete'+'?id='+elmnt.dataset.id+'&type='+elmnt.dataset.type)
+            form.submit()
+
+        } else {
+        };
+        
+    }
+
+</script>
 
 
 

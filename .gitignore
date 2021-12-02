@@ -1,9 +1,13 @@
-myweb/__pycache__/__init__.cpython-37.pyc
-myweb/__pycache__/models.cpython-37.pyc
-myweb/errors/__pycache__/handler.cpython-37.pyc
-myweb/main/__pycache__/routes.cpython-37.pyc
-myweb/posts/__pycache__/forms.cpython-37.pyc
-myweb/posts/__pycache__/routes.cpython-37.pyc
-myweb/posts/__pycache__/util.cpython-37.pyc
-myweb/users/__pycache__/routes.cpython-37.pyc
-myweb/config/__pycache__/Config.cpython-37.pyc
+# myweb/__pycache__/__init__.cpython-37.pyc
+# myweb/__pycache__/models.cpython-37.pyc
+# myweb/errors/__pycache__/handler.cpython-37.pyc
+# myweb/main/__pycache__/routes.cpython-37.pyc
+# myweb/posts/__pycache__/forms.cpython-37.pyc
+# myweb/posts/__pycache__/routes.cpython-37.pyc
+# myweb/posts/__pycache__/util.cpython-37.pyc
+# myweb/users/__pycache__/routes.cpython-37.pyc
+# myweb/config/__pycache__/Config.cpython-37.pyc
+
+#ignore __pycache__
+*.cpython-37.pyc
+__pycache__/
