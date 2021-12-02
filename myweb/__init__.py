@@ -27,7 +27,7 @@ def create_app(config_name):
     from myweb.users.routes import users
     from myweb.posts.routes import posts
     from myweb.main.routes import main
-    from myweb.errors.handler import errors
+    from myweb.errors.handlers import errors
 
     app.register_blueprint(users)
     app.register_blueprint(posts)
